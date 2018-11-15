@@ -4,7 +4,6 @@ var Display = require("..//models/display").Display;
 
 const createDisplay = async (req, res) => {
   var display = new Display();
-
   display.screen = req.body.display.screen;
   display.acknowledged = false;
   display.displayType = req.body.display.displayType;

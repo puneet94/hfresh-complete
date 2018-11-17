@@ -4,10 +4,23 @@ var Display = require("..//models/display").Display;
 
 const createDisplay = async (req, res) => {
   var display = new Display();
-  display.screen = req.body.display.screen;
+  const displayType = req.body.display.displayType;
   display.acknowledged = false;
-  display.displayType = req.body.display.displayType;
-  display.products = req.body.display.products;
+  display.screen = req.body.display.screen;
+  display.store = req.body.display.store;
+  display.displayType = displayType;
+  
+  if(displayType=="dynamic"){
+    display.screen = req.body.display.screen;
+    display.products = JSON.stringify(req.body.display.products);
+    display.delay = req.body.display.delay;
+  }
+  else if(displayType=="static"){
+    display.productName = req.body.display.productName 
+    display.productPrice = req.body.display.productPrice
+    display.productCategory = req.body.display.productCategory
+    display.productImage = req.body.display.productImage
+  }
 
   try {
     //let savedUser = await user.save();

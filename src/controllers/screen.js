@@ -5,7 +5,7 @@ const createScreen = async (req, res) => {
   screen.screenName = req.body.screen.screenName;
   screen.rid = req.body.screen.rid;
   screen.rurl = req.body.screen.rurl;
-  screen.storeId = req.body.screen.storeId;
+  screen.store = req.body.screen.store;
   try {
     let screenSaved = await screen.save();
 
@@ -30,6 +30,8 @@ function getScreens(req, res) {
   var query = {};
 
   query.store = req.params.storeId;
+  console.log("storeid");
+  console.log(query);
 
   var options = {};
 

@@ -8,10 +8,16 @@ autoIncrement.initialize(mongoose.connection);
 
 var DisplaySchema = new Schema({
   time: { type: Date, default: Date.now },
-  screen: { type: Schema.ObjectId, ref: "Screen", childPath: "displays" },
+  screen: { type: Schema.Types.ObjectId, ref: "Screen", childPath: "displays" },
+  store: { type: Schema.ObjectId, ref: "Store" },
   acknowledged: { type: Boolean },
   displayType: { type: String },
-  products: { type: String }
+  delay: {type:Number},
+  products: { type: String },
+  productName: {type:String},
+  productPrice: {type:Number},
+  productCategory: {type:String},
+  productImage: {type:String}
 });
 
 DisplaySchema.plugin(relationship, { relationshipPathName: "screen" });

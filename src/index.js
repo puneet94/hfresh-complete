@@ -14,6 +14,13 @@ require("dotenv").config();
 
 app.set("dbUrl", process.env.DB_URL);
 
+var Promise = require('bluebird');
+var {Storage} = require('@google-cloud/storage');
+
+var storage = new Storage({
+  projectId: 'hfresh-new',
+  keyFilename: './src/hfresh-new-5c1003bcc8b9.json'
+})
 mongoose.connect(app.get("dbUrl")).then(function(){
   console.log("connected successfully");
 
@@ -30,20 +37,25 @@ if (app.get('env') === 'production') {
 }*/
 
 var userRouter = require("./routes/user");
+var uploadRouter = require("./routes/imageUpload");
 var screenRouter = require("./routes/screen");
 var displayRouter = require("./routes/display");
 var storeRouter = require("./routes/store");
 var ProductModel = require("./models/product_model");
+const formData = require('express-form-data')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(compression());
-app.set("port", process.env.PORT || 8080);
+
+app.use(formData.parse())
+app.set("port",  process.env.PORT || 8080);
 
 app.use("/user", userRouter);
 app.use("/display", displayRouter);
 app.use("/screen", screenRouter);
 app.use("/store", storeRouter);
+app.use("/upload", uploadRouter);
 
 app.use(express.static(__dirname + "/hfresh-display/build"));
 
@@ -94,20 +106,62 @@ const sequelize = new Sequelize(
     }
   }
 );
-
-
+/*
 sequelize
   .authenticate()
   .then(() => {
-    console.log("Connection hassssss been established successfully.");
+    console.log("Connection has been established successfully.");
   })
   .catch(err => {
-    console.error("Unable to sssssonnect to the database:", err);
+    console.error("Unable to connect to the database:", err);
   });
 
-  
-
-console.log("databse connected");
+  */
 server.listen(app.get("port"), function() {
   console.log("listening on server...." + app.get("port"));
+  uploadImage();
 });
+
+function uploadImage(){
+
+var BUCKET_NAME = 'my-bucket'
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/bucket
+var myBucket = storage.bucket(BUCKET_NAME)
+
+// check if a file exists in bucket
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/file?method=exists
+console.log("bucket access");
+    
+    
+// upload file to bucket
+// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/bucket?method=upload
+let localFileLocation = './bg_paral.jpg'
+let file = myBucket.file(localFileLocation);
+    console.log("file exists");
+
+const stream = file.createWriteStream({
+  metadata: {
+    contentType: "image/jpeg"
+  }
+});
+
+stream.on('error', (err) => {
+ 
+ console.log(err);
+});
+
+stream.on('finish', () => {
+  var cloudStorageObject = gcsname;
+  var cloudStoragePublicUrl = getPublicUrl("bg_paral.jpg");
+  console.log("end file load");
+  console.log(cloudStoragePublicUrl)
+});
+
+stream.end();
+// get public url for file
+function getPublicUrl(filename) {
+  return 'https://storage.googleapis.com/' + bucketName + '/' + filename;
+}
+
+
+}

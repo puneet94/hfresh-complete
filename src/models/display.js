@@ -17,7 +17,7 @@ var DisplaySchema = new Schema({
   productName: {type:String},
   productPrice: {type:Number},
   productCategory: {type:String},
-  productImage: {type:String}
+  productImages: [{type:String}]
 });
 
 DisplaySchema.plugin(relationship, { relationshipPathName: "screen" });

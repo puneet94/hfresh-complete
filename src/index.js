@@ -119,49 +119,5 @@ sequelize
   */
 server.listen(app.get("port"), function() {
   console.log("listening on server...." + app.get("port"));
-  uploadImage();
+
 });
-
-function uploadImage(){
-
-var BUCKET_NAME = 'my-bucket'
-// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/bucket
-var myBucket = storage.bucket(BUCKET_NAME)
-
-// check if a file exists in bucket
-// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/file?method=exists
-console.log("bucket access");
-    
-    
-// upload file to bucket
-// https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/0.39.0/storage/bucket?method=upload
-let localFileLocation = './bg_paral.jpg'
-let file = myBucket.file(localFileLocation);
-    console.log("file exists");
-
-const stream = file.createWriteStream({
-  metadata: {
-    contentType: "image/jpeg"
-  }
-});
-
-stream.on('error', (err) => {
- 
- console.log(err);
-});
-
-stream.on('finish', () => {
-  var cloudStorageObject = gcsname;
-  var cloudStoragePublicUrl = getPublicUrl("bg_paral.jpg");
-  console.log("end file load");
-  console.log(cloudStoragePublicUrl)
-});
-
-stream.end();
-// get public url for file
-function getPublicUrl(filename) {
-  return 'https://storage.googleapis.com/' + bucketName + '/' + filename;
-}
-
-
-}
